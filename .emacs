@@ -133,8 +133,8 @@
        (list (region-beginning) (region-end))
      (list nil nil)))
   (if beg
-      (elpy--nav-move-region-vertically beg end 1)
-    (elpy--nav-move-line-vertically 1)))
+      (move-region-vertically beg end 1)
+    (move-line-vertically 1)))
 
 (defun move-line-or-region-up (&optional beg end)
   "Move the current line or active region down."
@@ -143,8 +143,8 @@
        (list (region-beginning) (region-end))
      (list nil nil)))
   (if beg
-      (elpy--nav-move-region-vertically beg end -1)
-    (elpy--nav-move-line-vertically -1)))
+      (move-region-vertically beg end -1)
+    (move-line-vertically -1)))
 
 (defun move-line-vertically (dir)
   (let* ((beg (point-at-bol))
@@ -155,29 +155,6 @@
     (save-excursion
       (insert region))
     (goto-char (+ (point) col))))
-
-(defun move-region-vertically (beg end dir)
-  (let* ((point-before-mark (< (point) (mark)))
-         (beg (save-excursion
-                (goto-char beg)
-                (point-at-bol)))
-         (end (save-excursion
-                (goto-char end)
-                (if (bolp)
-                    (point)
-                  (point-at-bol 2))))
-         (region (delete-and-extract-region beg end)))
-    (goto-char beg)
-    (forward-line dir)
-    (save-excursion
-      (insert region))
-    (if point-before-mark
-        (set-mark (+ (point)
-                     (length region)))
-      (set-mark (point))
-      (goto-char (+ (point)
-                    (length region))))
-    (setq deactivate-mark nil)))
 
 
 ;; C-S-* and S-* doesn't work form terminal
