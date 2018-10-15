@@ -17,6 +17,8 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; (add-to-list 'auto-mode-alist '("\\.kv\\'" . kivy-mode))
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-irony))
 
 
 ;; look
@@ -24,24 +26,25 @@
 (scroll-bar-mode -1)
 ;; (menu-bar-mode -1)
 (column-number-mode 1)
+;; (global-linum-mode t)
 
 ;; installation
-;; (require 'package)
 (package-initialize)
 ;; (package-refresh-contents)
 
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 ;; (load-theme 'monokai t)
+;; (load-theme 'material t)
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; space as yes
 (setq inhibit-startup-message t)
-;; (load-theme 'material t)
-;; (global-linum-mode t)
 (setq indent-tabs-mode nil)
 (setq default-tab-width 4)
 (setq matlab-shell-command "octave-cli")
+(setq matlab-comment-region-s "% ")
 (elpy-enable)
 (setq python-indent 4)
+(setq c-basic-offset 4)
 (setq elpy-rpc-python-command "python3")
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "-i --simple-prompt")
@@ -55,6 +58,13 @@
 ;; for Proof General (Coq)
 ;; (load "~/.emacs.d/lisp/PG/generic/proof-site")
 
+(add-hook 'c-mode-hook
+          (lambda ()
+            (irony-mode 1)
+            (company-mode 1)
+            (flycheck-mode 1)
+            (irony-eldoc)
+            (irony-cdb-autosetup-compile-options)))
 (add-hook 'haskell-mode-hook 'intero-mode)
 (add-hook 'octave-mode-hook
 		  (lambda ()
