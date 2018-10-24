@@ -1,4 +1,8 @@
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
  '(custom-enabled-themes (quote (wombat)))
@@ -10,9 +14,17 @@
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.org/packages/")
-	 ("melpa-stable" . "https://stable.melpa.org/packages/")))))
+     ("melpa-stable" . "https://stable.melpa.org/packages/"))))
+ '(package-selected-packages
+   (quote
+    (flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
  '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
-(custom-set-faces)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; (add-to-list 'auto-mode-alist '("\\.kv\\'" . kivy-mode))
@@ -199,6 +211,8 @@
 (global-set-key (kbd "C-S-x <right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "C-S-x <down>") 'shrink-window)
 (global-set-key (kbd "C-S-x <up>") 'enlarge-window)
+(global-set-key (kbd "C-S-v") '(lambda () (interactive) (move-beginning-of-line nil) (set-mark-command nil) (move-end-of-line nil)))
+
 ;; free: C-M-y, M-n, M-p
 
 ;; multiple-cursors
