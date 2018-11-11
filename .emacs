@@ -58,6 +58,7 @@
 (setq next-screen-context-lines 10) ;; now middle -> top
 (setq inhibit-startup-message t)
 (setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 (setq default-tab-width 4)
 (setq matlab-shell-command "octave-cli")
 (setq matlab-comment-region-s "% ")
@@ -104,6 +105,7 @@
         ("omicron" . ?ο)
         ("pi" . ?π)
         ("Pi" . ?Π)
+        ("PI" . ?Π)
         ("rho" . ?ρ)
         ("ro" . ?ρ)
         ("sigma" . ?σ)
@@ -196,6 +198,7 @@
                 (font-lock-mode 1))))
 (add-hook 'python-mode
 	  (lambda () (setq prettify-symbols-alist my-prettify-symbols-alist)))
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; my key bindings
 (defun new-line-down ()
@@ -373,6 +376,7 @@
 (global-set-key (kbd "C-M-1") 'delete-other-windows)
 (global-set-key (kbd "C-M-2") 'split-window-below)
 (global-set-key (kbd "C-M-3") 'split-window-right)
+;; M-s h [.u...]
 ;; free: C-M-y, M-s *, C-x <C-backsapce>
 
 ;; multiple-cursors
@@ -390,4 +394,3 @@
 ;; two following are buggy
 (global-set-key (kbd "C-S-c C-S-n") 'mc/mark-next-lines)
 (global-set-key (kbd "C-S-c C-S-p") 'mc/mark-previous-lines)
-
