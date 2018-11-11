@@ -259,15 +259,15 @@
 (global-set-key (kbd "C-S-p") '(lambda () (interactive) (previous-line) (back-to-indentation)))
 (global-set-key (kbd "C-M-P") '(lambda () (interactive) (previous-line) (move-end-of-line nil)))
 (global-set-key (kbd "C-x :") 'idomenu)
-;; (global-set-key (kbd "C-]") 'iy-go-to-char)
-;; (global-set-key (kbd "C-M-]") 'iy-go-up-to-char-backward)
-(global-set-key (kbd "C-S-s") 'iy-go-up-to-char)
+(global-set-key (kbd "C-S-s") 'iy-go-up-to-char) ;; repeating char -- repeating search
 (global-set-key (kbd "C-S-r") 'iy-go-to-char-backward)
+(global-set-key (kbd "C-]") 'iy-go-to-char) ;; shadow 'abort-recursive-edit
+(global-set-key (kbd "C-M-]") 'iy-go-up-to-char-backward) ;; this 2 are a bit strange
 (global-set-key (kbd "C-M-0") 'delete-window)
 (global-set-key (kbd "C-M-1") 'delete-other-windows)
 (global-set-key (kbd "C-M-2") 'split-window-below)
 (global-set-key (kbd "C-M-3") 'split-window-right)
-;; free: C-M-y, M-n, M-p, M-s *, C-x <C-backsapce>
+;; free: C-M-y, M-s *, C-x <C-backsapce>
 
 ;; multiple-cursors
 ;; (add-to-list 'package-archives )
