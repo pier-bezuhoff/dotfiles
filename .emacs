@@ -53,6 +53,7 @@
 (fset 'yes-or-no-p 'y-or-n-p) ;; space as yes
 ;; TODO: make half-screen (now bad in minibuffer)
 ;; (window-height) / 2
+(setq backup-by-copying t)
 (setq next-screen-context-lines 10) ;; now middle -> top
 (setq inhibit-startup-message t)
 (setq indent-tabs-mode nil)
@@ -284,3 +285,4 @@
 ;; two following are buggy
 (global-set-key (kbd "C-S-c C-S-n") 'mc/mark-next-lines)
 (global-set-key (kbd "C-S-c C-S-p") 'mc/mark-previous-lines)
+
