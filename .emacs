@@ -167,8 +167,8 @@
          ("sqrt" . ?√)
          ("sum" . ?∑)
 	 ("return" . ?⟼)
-         ("all" . ?∀)
-         ("any" . ?∃)
+         ;; ("all" . ?∀)
+         ;; ("any" . ?∃)
          ("for" . ?∀)
          ("oo" . ?∞)
          ("int" . ?ℤ)
@@ -213,6 +213,7 @@
             (if (eq window-system 'x)
                 (font-lock-mode 1))))
 (add-hook 'python-mode
+          (setq flycheck-mode t)
 	  (lambda () (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
