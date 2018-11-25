@@ -18,7 +18,7 @@
  '(package-selected-packages
    (quote
     (smartscan use-package markdown-mode yaml-mode intero helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
- '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
+'(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -250,16 +250,18 @@
              (untabify (point-min) (point-max)))
          (delete-trailing-whitespace))
 
+(require 'delsel)
+
 ;; my key bindings
 (defun new-line-down ()
-  "Vim-like o"
+  "Vim-like 'o'."
   (interactive)
   (move-end-of-line nil)
   (newline)
   (indent-for-tab-command))
 
 (defun new-line-up ()
-  "Vim-like O"
+  "Vim-like 'O'."
   (interactive)
   (move-beginning-of-line nil)
   (newline)
@@ -267,13 +269,14 @@
   (indent-for-tab-command))
 
 (defun kill-line-spaces ()
-  "Kill chars to eol"
+  "Kill chars to eol."
   (interactive)
   (set-mark-command nil)
   (move-end-of-line nil)
   (delete-active-region))
 
 (defun double-newline ()
+  "Insert double newline."
   (interactive)
   (move-end-of-line nil)
   (newline)
@@ -281,7 +284,7 @@
   (indent-for-tab-command))
 
 (defun comment-line ()
-  "Comment/uncomment line (using 'comment-dwim)"
+  "Comment/uncomment line (using 'comment-dwim)."
   (interactive)
   (move-end-of-line nil)
   (back-to-indentation)
@@ -290,6 +293,7 @@
   (comment-dwim nil))
 
 (defun kill-word-end ()
+  "Kill punctuation, word and following punctuation."
   (interactive)
   (set-mark-command nil)
   (forward-word)
@@ -298,6 +302,7 @@
   (delete-active-region))
 
 (defun kill-upto-word ()
+  "Kill punctuation up to word."
   (interactive)
   (set-mark-command nil)
   (forward-word)
@@ -305,7 +310,7 @@
   (delete-active-region))
 
 (defun double-line ()
-  "Yank and put current line"
+  "Yank and put current line."
   (interactive)
   (move-beginning-of-line nil)
   (kill-line)
@@ -314,12 +319,36 @@
   (yank))
 
 (defun split-statement ()
-  "Split line and indent"
+  "Split line and indent."
   (interactive)
   (just-one-space)
   (backward-delete-char 1)
   (newline)
   (indent-for-tab-command))
+
+(defun select-line-next ()
+  "Select line if no region, else select next line."
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (forward-line)
+        (move-end-of-line nil))
+    (progn
+      (move-beginning-of-line nil)
+      (set-mark-command nil)
+      (move-end-of-line nil))))
+
+(defun select-line-previous ()
+  "Select line if no region, else select previous line."
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (forward-line -1)
+        (move-beginning-of-line nil))
+    (progn
+      (move-end-of-line nil)
+      (set-mark-command nil)
+      (move-beginning-of-line nil))))
 
 ;; borrowed from elpy
 (defun move-line-or-region-down (&optional beg end)
@@ -349,7 +378,7 @@
          (region (delete-and-extract-region beg end)))
     (forward-line dir)
     (save-excursion
-      (insert region))
+      (insert region))))
 
 (defun move-region-vertically (beg end dir)
   (let* ((point-before-mark (< (point) (mark)))
@@ -373,16 +402,15 @@
       (goto-char (+ (point)
                     (length region))))
     (setq deactivate-mark nil)))
-    (goto-char (+ (point) col))))
 
 (defadvice scroll-down (around half-window activate)
   (setq next-screen-context-lines
-    (max 1 (/ (1- (window-height (selected-window))) 2)))
+        (max 1 (/ (1- (window-height (selected-window))) 2)))
   ad-do-it)
 
 (defadvice scroll-up (around half-window activate)
   (setq next-screen-context-lines
-    (max 1 (/ (1- (window-height (selected-window))) 2)))
+        (max 1 (/ (1- (window-height (selected-window))) 2)))
   ad-do-it)
 
 ;; C-S-* and S-* doesn't work form terminal
@@ -422,7 +450,8 @@
 (global-set-key (kbd "C-S-x <right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "C-S-x <down>") 'shrink-window)
 (global-set-key (kbd "C-S-x <up>") 'enlarge-window)
-(global-set-key (kbd "C-S-v") '(lambda () (interactive) (move-beginning-of-line nil) (set-mark-command nil) (move-end-of-line 1)))
+(global-set-key (kbd "C-S-v") 'select-line-next)
+(global-set-key (kbd "C-M-S-v") 'select-line-previous)
 (global-set-key (kbd "C-S-n") '(lambda () (interactive) (next-line) (back-to-indentation)))
 (global-set-key (kbd "C-M-N") '(lambda () (interactive) (next-line) (move-end-of-line nil)))
 (global-set-key (kbd "C-S-p") '(lambda () (interactive) (previous-line) (back-to-indentation)))
