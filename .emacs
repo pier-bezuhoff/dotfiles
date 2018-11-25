@@ -17,7 +17,7 @@
      ("melpa-stable" . "https://stable.melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (markdown-mode yaml-mode intero helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
+    (smartscan use-package markdown-mode yaml-mode intero helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
  '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -54,29 +54,24 @@
 (fset 'yes-or-no-p 'y-or-n-p) ;; space as yes
 ;; TODO: make half-screen (now bad in minibuffer)
 ;; (window-height) / 2
-(setq backup-by-copying t)
-(setq next-screen-context-lines 10) ;; now middle -> top
-(setq inhibit-startup-message t)
-(setq indent-tabs-mode nil)
-(setq-default indent-tabs-mode nil)
-(setq default-tab-width 4)
-(setq matlab-shell-command "octave-cli")
-(setq matlab-comment-region-s "% ")
-(elpy-enable)
-(setq python-indent 4)
-(setq c-basic-offset 4)
-(setq elpy-rpc-python-command "python3")
-(setq python-shell-interpreter "ipython3"
-      python-shell-interpreter-args "-i --simple-prompt")
-;; (when (require 'flycheck nil t)
-;;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-;;   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
-;; (recentf-mode 1)
-;; (setq recentf-max-menu-items 25)
+(setq
+ backup-by-copying t
+ next-screen-context-lines 10 ;; now middle -> top
+ inhibit-startup-message t
+ indent-tabs-mode nil
+ default-tab-width 4
+ tab-width 4
+ matlab-shell-command "octave-cli"
+ matlab-comment-region-s "% "
+ )
+(setq-default
+ indent-tabs-mode nil
+ tab-width 4)
 
 ;; for Proof General (Coq)
 ;; (load "~/.emacs.d/lisp/PG/generic/proof-site")
+
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 (setq my-prettify-symbols-alist
       '(
@@ -120,7 +115,6 @@
         ("Psi" . ?𝚿)
         ("omega" . ?ω)
         ("Omega" . ?Ω)
-        ("==" . ?≡)
         ("<=" . ?≤)
         (">=" . ?≥)
         ("<-" . ?←)
@@ -131,13 +125,14 @@
       (append
        my-prettify-symbols-alist
        '(
+         ("==" . ?≡)
          ("/=" . ?≢)
          ("sum" . ?∑)
          ("product" . ?∏)
          ("sqrt" . ?√)
-	 ;; ("return" . ?⟼)
-	 ("`elem`" . ?∈)
-	 ("`notElem`" . ?∉)
+         ;; ("return" . ?⟼)
+         ("`elem`" . ?∈)
+         ("`notElem`" . ?∉)
          ("forall" . ?∀)
          ("exists" . ?∃)
          ("all" . ?∀)
@@ -145,96 +140,134 @@
          ("fst" . ?₁)
          ("snd" . ?₂)
          ("Integer" . ?ℤ)
-	 ("Bool" . ?𝔹)
+         ("Bool" . ?𝔹)
          ("True" . ?𝕋)
-	 ("False" . ?𝔽)
+         ("False" . ?𝔽)
          ("Double" . ?ℝ)
-	 ("String" . ?𝕊)
-	 ("[Char]" . ?𝕊)
+         ("String" . ?𝕊)
+         ("[Char]" . ?𝕊)
          ("Complex" . ?ℂ)
          ))
       my-python-prettify-symbols-alist
       (append
        my-prettify-symbols-alist
        '(
+         ("==" . ?≡)
          ("!=" . ?≢)
          ("bool" . ?𝔹)
          ("inf" . ?∞)
          ("infinity" . ?∞)
-	 ("True" . ?𝕋)
-	 ("False" . ?𝔽)
+         ("True" . ?𝕋)
+         ("False" . ?𝔽)
          ("math.sqrt" . ?√)
          ("sqrt" . ?√)
          ("sum" . ?∑)
-	 ("return" . ?⟼)
+         ("return" . ?⟼)
          ;; ("all" . ?∀)
          ;; ("any" . ?∃)
          ("for" . ?∀)
          ("oo" . ?∞)
          ("int" . ?ℤ)
-	 ("float" . ?ℝ)
-	 ("str" . ?𝕊)
+         ("float" . ?ℝ)
+         ("str" . ?𝕊)
          ("complex" . ?ℂ)
-	 ("yield" . ?⟻)
-	 ("in" . ?∈)
-	 ("not in" . ?∉)
+         ("yield" . ?⟻)
+         ("in" . ?∈)
+         ("not in" . ?∉)
          ))
       prettify-symbols-alist my-prettify-symbols-alist
       python-prettify-symbols-alist my-python-prettify-symbols-alist)
 
-;; (add-hook 'lisp-mode-hook
-;;           (lambda ()
-;; 	    (prettify-symbols-mode t)
-;; 	    (setq prettify-symbols-alist my-prettify-symbols-alist)))
-(eval-after-load 'lisp-mode
-  (lambda () (setq prettify-symbols-alist my-prettify-symbols-alist)))
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda () (setq prettify-symbols-alist my-prettify-symbols-alist)))
-(add-hook 'c-mode-hook
-          (lambda ()
-            (setq prettify-symbols-alist my-prettify-symbols-alist)
-            (irony-mode 1)
-            (company-mode 1)
-            (flycheck-mode 1)
-            (irony-eldoc)
-            (irony-cdb-autosetup-compile-options)))
-(add-hook 'haskell-mode-hook
-          (lambda ()
-            (setq haskell-font-lock-symbols t)
-            (delq (assoc "()" haskell-font-lock-symbols-alist) haskell-font-lock-symbols-alist)
-            (intero-mode t)
-            (setq prettify-symbols-alist my-haskell-prettify-symbols-alist)
-            (prettify-symbols-mode t)))
-(add-hook 'octave-mode-hook
-	  (lambda ()
-            (setq prettify-symbols-alist my-prettify-symbols-alist)
-            (abbrev-mode 1)
-            (auto-fill-mode 1)
-            (if (eq window-system 'x)
-                (font-lock-mode 1))))
-(add-hook 'python-mode
-          (setq flycheck-mode t)
-	  (lambda () (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(defmacro hooking (hook &rest actions)
+  `(add-hook ',hook '(lambda () ,@actions)))
+
+(use-package cc-mode
+  :config
+  (hooking c-mode-hook
+           (setq prettify-symbols-alist my-prettify-symbols-alist)
+           (setq c-basic-offset 4)
+           (irony-mode 1)
+           (company-mode 1)
+           (flycheck-mode 1)
+           (irony-eldoc)
+           (irony-cdb-autosetup-compile-options)))
+
+(use-package haskell-mode
+  :config
+  (hooking haskell-mode-hook
+           (setq haskell-font-lock-symbols t)
+           ;; "()" is not empty set!
+           (delq (assoc "()" haskell-font-lock-symbols-alist) haskell-font-lock-symbols-alist)
+           (setq prettify-symbols-alist my-haskell-prettify-symbols-alist)
+           (intero-mode t)
+           (prettify-symbols-mode t)))
+
+(use-package octave
+  :config
+  (hooking octave-mode-hook
+           (setq prettify-symbols-alist my-prettify-symbols-alist)
+           (abbrev-mode 1)
+           (auto-fill-mode 1)
+           (if (eq window-system 'x)
+               (font-lock-mode 1))))
+
+(use-package lisp-mode
+  :config
+  (hooking lisp-mode-hook
+           (setq prettify-symbols-alist my-prettify-symbols-alist)))
+
+(use-package elisp-mode
+  :config
+  (hooking emacs-lisp-mode-hook
+           (setq prettify-symbols-alist my-prettify-symbols-alist)))
+
+(use-package python
+  :config
+  (elpy-enable)
+  (setq
+   elpy-rpc-python-command "python3"
+   python-shell-interpreter "ipython3"
+   python-shell-interpreter-args "-i --simple-prompt")
+  ;; (when (require 'flycheck nil t)
+  ;; elpy-modules (delq elpy-module-flymake elpy-modules))
+  ;; (flycheck-mode)
+  (hooking python-mode-hook
+           (setq python-indent 4)
+           (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
+
+(use-package flycheck-mode
+  :bind
+  ("C-!" . flycheck-list-errors)
+  ("C-?" . flycheck-next-error)
+  ("C-M-?" . flycheck-previous-error))
+
+(use-package smartscan
+  :init
+  (global-smartscan-mode t))
+
+(hooking before-save-hook
+         (if (not indent-tabs-mode)
+             (untabify (point-min) (point-max)))
+         (delete-trailing-whitespace))
 
 ;; my key bindings
 (defun new-line-down ()
-  "vim-like o"
+  "Vim-like o"
   (interactive)
   (move-end-of-line nil)
   (newline)
   (indent-for-tab-command))
 
 (defun new-line-up ()
-  "vim-like O"
+  "Vim-like O"
   (interactive)
   (move-beginning-of-line nil)
   (newline)
-  (previous-line)
+  (forward-line -1)
   (indent-for-tab-command))
 
 (defun kill-line-spaces ()
-  "kill chars to eol"
+  "Kill chars to eol"
   (interactive)
   (set-mark-command nil)
   (move-end-of-line nil)
@@ -248,7 +281,7 @@
   (indent-for-tab-command))
 
 (defun comment-line ()
-  "comment/uncomment line (using 'comment-dwim)"
+  "Comment/uncomment line (using 'comment-dwim)"
   (interactive)
   (move-end-of-line nil)
   (back-to-indentation)
@@ -272,12 +305,21 @@
   (delete-active-region))
 
 (defun double-line ()
+  "Yank and put current line"
   (interactive)
   (move-beginning-of-line nil)
   (kill-line)
   (yank)
   (newline)
   (yank))
+
+(defun split-statement ()
+  "Split line and indent"
+  (interactive)
+  (just-one-space)
+  (backward-delete-char 1)
+  (newline)
+  (indent-for-tab-command))
 
 ;; borrowed from elpy
 (defun move-line-or-region-down (&optional beg end)
@@ -335,12 +377,12 @@
 
 (defadvice scroll-down (around half-window activate)
   (setq next-screen-context-lines
-	(max 1 (/ (1- (window-height (selected-window))) 2)))
+    (max 1 (/ (1- (window-height (selected-window))) 2)))
   ad-do-it)
 
 (defadvice scroll-up (around half-window activate)
   (setq next-screen-context-lines
-	(max 1 (/ (1- (window-height (selected-window))) 2)))
+    (max 1 (/ (1- (window-height (selected-window))) 2)))
   ad-do-it)
 
 ;; C-S-* and S-* doesn't work form terminal
@@ -359,6 +401,7 @@
 (global-set-key (kbd "C-S-m") '(lambda () (interactive) (move-to-window-line nil)))
 (global-set-key (kbd "C-S-l") '(lambda () (interactive) (move-to-window-line -1)))
 (global-set-key (kbd "C-S-j") '(lambda () (interactive) (next-line) (join-line)))
+(global-set-key (kbd "C-M-S-j") 'split-statement)
 (global-set-key (kbd "M-H") '(lambda () (interactive) (recenter 0)))
 (global-set-key (kbd "M-M") '(lambda () (interactive) (recenter)))
 (global-set-key (kbd "M-L") '(lambda () (interactive) (recenter -1)))
