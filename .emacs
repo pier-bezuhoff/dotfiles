@@ -10,6 +10,7 @@
    (quote
     ("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "95b0bc7b8687101335ebbf770828b641f2befdcf6d3c192243a251ce72ab1692" default)))
  '(hl-sexp-background-color "#1c1f26")
+ '(icicle-mode nil)
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
@@ -17,7 +18,7 @@
      ("melpa-stable" . "https://stable.melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (smartscan use-package markdown-mode yaml-mode intero helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
+    (helm-fuzzier helm-fuzzy-find fuzzy fzf kivy-mode paredit smartscan use-package markdown-mode yaml-mode intero helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
 '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -26,6 +27,8 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; when i become brave... (M-?)
+;; (add-to-list 'load-path "~/.emacs.d/icicles") (icy-mode 1)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; (add-to-list 'auto-mode-alist '("\\.kv\\'" . kivy-mode))
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
@@ -40,8 +43,10 @@
 (menu-bar-mode -1)
 (column-number-mode 1)
 ;; (global-linum-mode t)
-(ido-mode 1)
 (global-prettify-symbols-mode t)
+;; (delete-selection-mode 1)
+(setq show-paren-delay 0)
+(show-paren-mode 1)
 
 ;; installation
 (package-initialize)
@@ -56,14 +61,17 @@
 ;; (window-height) / 2
 
 (setq
+ save-interprogram-paste-before-kill t
  backup-by-copying t
- next-screen-context-lines 10 ;; now middle -> top
+ ;; TODO: as M-H, M-M, M-L
+ next-screen-context-lines 10 ;; now middle -> top, but bad in minibuffer
  inhibit-startup-message t
  indent-tabs-mode nil
  default-tab-width 4
  tab-width 4
  matlab-shell-command "octave-cli"
  matlab-comment-region-s "% "
+ delete-trailing-whitespace-on-save t ;; mine, for before-save-hook
  )
 (setq-default
  indent-tabs-mode nil
@@ -235,6 +243,12 @@
            (setq python-indent 4)
            (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
 
+(use-package ido
+  :init
+  (ido-mode 1)
+  :bind
+  ("C-x :" . idomenu))
+
 (use-package flycheck-mode
   :bind
   ("C-!" . flycheck-list-errors)
@@ -248,7 +262,7 @@
 (hooking before-save-hook
          (if (not indent-tabs-mode)
              (untabify (point-min) (point-max)))
-         (delete-trailing-whitespace))
+         (if delete-trailing-whitespace-on-save (delete-trailing-whitespace)))
 
 (require 'delsel)
 
@@ -291,6 +305,30 @@
   (set-mark-command nil)
   (move-end-of-line nil)
   (comment-dwim nil))
+
+(defun comment-line-forward ()
+  "Comment/uncomment line and move to the next."
+  (interactive)
+  (comment-line)
+  (forward-line)
+  (back-to-indentation))
+
+(defun comment-line-backward ()
+  "Comment/uncomment line and move to the previous."
+  (interactive)
+  (comment-line)
+  (forward-line -1)
+  (back-to-indentation))
+
+(defun append-comment-forward ()
+  "Append comment to the next line."
+  (interactive)
+  (back-to-indentation)
+  (kill-line)
+  (kill-whole-line)
+  (move-end-of-line nil)
+  (insert " ")
+  (yank 2))
 
 (defun kill-word-end ()
   "Kill punctuation, word and following punctuation."
@@ -436,10 +474,9 @@
 (global-set-key (kbd "M-n") 'newline)
 (global-set-key (kbd "M-RET") 'double-newline)
 (global-set-key (kbd "C-;") 'comment-line)
-(global-set-key (kbd "C-:") '(lambda () (interactive) (comment-line) (next-line) (back-to-indentation)))
-(global-set-key (kbd "C-M-;") '(lambda () (interactive) (comment-line) (previous-line) (back-to-indentation)))
-;; append comment to next string
-(global-set-key (kbd "M-K") '(lambda () (interactive) (back-to-indentation) (kill-line) (kill-whole-line) (move-end-of-line nil) (insert " ") (yank 2)))
+(global-set-key (kbd "C-:") 'comment-line-forward)
+(global-set-key (kbd "C-M-:") 'comment-line-backward)
+(global-set-key (kbd "M-K") 'append-comment-forward) ;; NOTE: C-J -- append to previous line
 (global-set-key (kbd "C-S-d") 'kill-upto-word)
 (global-set-key (kbd "M-D") 'kill-word-end)
 (global-set-key (kbd "M-W") 'double-line)
@@ -456,7 +493,6 @@
 (global-set-key (kbd "C-M-N") '(lambda () (interactive) (next-line) (move-end-of-line nil)))
 (global-set-key (kbd "C-S-p") '(lambda () (interactive) (previous-line) (back-to-indentation)))
 (global-set-key (kbd "C-M-P") '(lambda () (interactive) (previous-line) (move-end-of-line nil)))
-(global-set-key (kbd "C-x :") 'idomenu)
 (global-set-key (kbd "C-S-s") 'iy-go-up-to-char) ;; repeating char -- repeating search
 (global-set-key (kbd "C-S-r") 'iy-go-to-char-backward)
 (global-set-key (kbd "C-]") 'iy-go-to-char) ;; shadow 'abort-recursive-edit
@@ -474,12 +510,9 @@
 (global-set-key (kbd "C-S-c C-,") 'mc/mark-previous-like-this-word)
 (global-set-key (kbd "C-S-c C->") 'mc/mark-next-like-this-symbol)
 (global-set-key (kbd "C-S-c C-<") 'mc/mark-previous-like-this-symbol)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this) ;; these two marks next/previous _line_
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this-dwim)
 (global-set-key (kbd "C-S-c l") 'mc/mark-pop)
 (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
-;; two following are buggy
-(global-set-key (kbd "C-S-c C-S-n") 'mc/mark-next-lines)
-(global-set-key (kbd "C-S-c C-S-p") 'mc/mark-previous-lines)
