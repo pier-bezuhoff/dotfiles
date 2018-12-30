@@ -57,14 +57,12 @@
 ;; (load-theme 'material t)
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; space as yes
-;; TODO: make half-screen (now bad in minibuffer)
-;; (window-height) / 2
 
 (setq
  save-interprogram-paste-before-kill t
  backup-by-copying t
  ;; TODO: as M-H, M-M, M-L
- next-screen-context-lines 10 ;; now middle -> top, but bad in minibuffer
+ ;; next-screen-context-lines 10 ;; now middle -> top, but bad in minibuffer
  inhibit-startup-message t
  indent-tabs-mode nil
  default-tab-width 4
@@ -224,11 +222,6 @@
   (hooking lisp-mode-hook
            (setq prettify-symbols-alist my-prettify-symbols-alist)))
 
-(use-package elisp-mode
-  :config
-  (hooking emacs-lisp-mode-hook
-           (setq prettify-symbols-alist my-prettify-symbols-alist)))
-
 (use-package python
   :config
   (elpy-enable)
@@ -257,7 +250,7 @@
 
 (use-package smartscan
   :init
-  (global-smartscan-mode t))
+  (smartscan-mode t))
 
 (hooking before-save-hook
          (if (not indent-tabs-mode)
@@ -441,15 +434,19 @@
                     (length region))))
     (setq deactivate-mark nil)))
 
-(defadvice scroll-down (around half-window activate)
-  (setq next-screen-context-lines
-        (max 1 (/ (1- (window-height (selected-window))) 2)))
-  ad-do-it)
+(defun half-screen () (max 1 (/ (1- (window-height)) 2)))
+(advice-add 'scroll-down :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
+(advice-add 'scroll-up :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
+(advice-add 'scroll-other-window :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 
-(defadvice scroll-up (around half-window activate)
-  (setq next-screen-context-lines
-        (max 1 (/ (1- (window-height (selected-window))) 2)))
-  ad-do-it)
+;; (defadvice scroll-down (around half-window activate)
+;;   (setq next-screen-context-lines (half-screen))
+;;   ad-do-it)
+
+;; (defadvice scroll-up (around half-window activate)
+;;   (setq next-screen-context-lines
+;;         (max 1 (/ (1- (window-height (selected-window))) 2)))
+;;   ad-do-it)
 
 ;; C-S-* and S-* doesn't work form terminal
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
