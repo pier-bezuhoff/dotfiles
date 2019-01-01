@@ -32,6 +32,7 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; (add-to-list 'auto-mode-alist '("\\.kv\\'" . kivy-mode))
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
+(add-to-list 'auto-mode-alist '("PKGBUILD" . shell-script-mode))
 (require 'desktop)
 (add-to-list 'desktop-path ".")
 (eval-after-load 'company
@@ -43,6 +44,8 @@
 (menu-bar-mode -1)
 (column-number-mode 1)
 ;; (global-linum-mode t)
+;; start from 0
+(setq linum-format (lambda (line) (propertize (number-to-string (1- line)) 'face 'linum)))
 (global-prettify-symbols-mode t)
 ;; (delete-selection-mode 1)
 (setq show-paren-delay 0)
@@ -57,12 +60,13 @@
 ;; (load-theme 'material t)
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; space as yes
+;; TODO: make half-screen (now bad in minibuffer)
+;; (window-height) / 2
 
 (setq
  save-interprogram-paste-before-kill t
  backup-by-copying t
- ;; TODO: as M-H, M-M, M-L
- ;; next-screen-context-lines 10 ;; now middle -> top, but bad in minibuffer
+ visible-bell t
  inhibit-startup-message t
  indent-tabs-mode nil
  default-tab-width 4
@@ -76,7 +80,7 @@
  tab-width 4)
 
 ;; for Proof General (Coq)
-;; (load "~/.emacs.d/lisp/PG/generic/proof-site")
+(load "~/.emacs.d/lisp/PG/generic/proof-site")
 
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 (setq my-prettify-symbols-alist
@@ -222,6 +226,11 @@
   (hooking lisp-mode-hook
            (setq prettify-symbols-alist my-prettify-symbols-alist)))
 
+(use-package elisp-mode
+  :config
+  (hooking emacs-lisp-mode-hook
+           (setq prettify-symbols-alist my-prettify-symbols-alist)))
+
 (use-package python
   :config
   (elpy-enable)
@@ -250,7 +259,7 @@
 
 (use-package smartscan
   :init
-  (smartscan-mode t))
+  (global-smartscan-mode t))
 
 (hooking before-save-hook
          (if (not indent-tabs-mode)
@@ -434,40 +443,60 @@
                     (length region))))
     (setq deactivate-mark nil)))
 
+(defun kill-line-backward ()
+  (interactive)
+  (set-mark-command nil)
+  (move-beginning-of-line nil)
+  (kill-region (mark) (point)))
+
+(defun insert-space-backward () (interactive) (insert " ") (backward-char))
+
+(defun hard-o () (interactive) (move-end-of-line nil) (newline))
+
+(defun hard-O () (interactive) (move-beginning-of-line nil) (newline))
+
+(defun move-to-top () (interactive) (move-to-window-line 0))
+(defun move-to-middle () (interactive) (move-to-window-line nil))
+(defun move-to-bottom () (interactive) (move-to-window-line -1))
+
+(defun join-next-line () (interactive) (next-line) (join-line))
+
+(defun recenter-top () (interactive) (recenter 0))
+(defun recenter-middle () (interactive) (recenter))
+(defun recenter-bottom () (interactive) (recenter -1))
+
+(defun next-line-start () (interactive) (next-line) (back-to-indentation))
+(defun next-line-end () (interactive) (next-line) (move-end-of-line nil))
+(defun previous-line-start () (interactive) (previous-line) (back-to-indentation))
+(defun previous-line-end () (interactive) (previous-line) (move-end-of-line nil))
+
+(defun revert-buffer-no-confirm () (interactive) (revert-buffer t t))
+
 (defun half-screen () (max 1 (/ (1- (window-height)) 2)))
 (advice-add 'scroll-down :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 (advice-add 'scroll-up :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 (advice-add 'scroll-other-window :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 
-;; (defadvice scroll-down (around half-window activate)
-;;   (setq next-screen-context-lines (half-screen))
-;;   ad-do-it)
-
-;; (defadvice scroll-up (around half-window activate)
-;;   (setq next-screen-context-lines
-;;         (max 1 (/ (1- (window-height (selected-window))) 2)))
-;;   ad-do-it)
-
 ;; C-S-* and S-* doesn't work form terminal
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 (global-set-key (kbd "M-<up>") 'move-line-or-region-up)
 (global-set-key (kbd "M-<down>") 'move-line-or-region-down)
-(global-set-key (kbd "M-S-SPC") '(lambda () (interactive) (insert " ") (backward-char)))
+(global-set-key (kbd "M-S-SPC") 'insert-space-backward)
 (global-set-key (kbd "C-o") 'new-line-down)
 (global-set-key (kbd "C-S-o") 'new-line-up)
-(global-set-key (kbd "M-o RET") '(lambda () (interactive) (move-end-of-line nil) (newline)))
-(global-set-key (kbd "M-o M-RET") '(lambda () (interactive) (move-beginning-of-line nil) (newline)))
+(global-set-key (kbd "M-o RET") 'hard-o)
+(global-set-key (kbd "M-o M-RET") 'hard-O)
 (global-set-key (kbd "C-S-k") 'kill-line-spaces)
 (global-set-key (kbd "M-s d") 'desktop-change-dir)
 (global-set-key (kbd "M-s s") 'desktop-save)
-(global-set-key (kbd "C-S-h") '(lambda () (interactive) (move-to-window-line 0)))
-(global-set-key (kbd "C-S-m") '(lambda () (interactive) (move-to-window-line nil)))
-(global-set-key (kbd "C-S-l") '(lambda () (interactive) (move-to-window-line -1)))
-(global-set-key (kbd "C-S-j") '(lambda () (interactive) (next-line) (join-line)))
+(global-set-key (kbd "C-S-h") 'move-to-top)
+(global-set-key (kbd "C-S-m") 'move-to-middle)
+(global-set-key (kbd "C-S-l") 'move-to-bottom)
+(global-set-key (kbd "C-S-j") 'join-next-line)
 (global-set-key (kbd "C-M-S-j") 'split-statement)
-(global-set-key (kbd "M-H") '(lambda () (interactive) (recenter 0)))
-(global-set-key (kbd "M-M") '(lambda () (interactive) (recenter)))
-(global-set-key (kbd "M-L") '(lambda () (interactive) (recenter -1)))
+(global-set-key (kbd "M-H") 'recenter-top)
+(global-set-key (kbd "M-M") 'recenter-middle)
+(global-set-key (kbd "M-L") 'recenter-bottom)
 (global-set-key (kbd "M-n") 'newline)
 (global-set-key (kbd "M-RET") 'double-newline)
 (global-set-key (kbd "C-;") 'comment-line)
@@ -484,12 +513,12 @@
 (global-set-key (kbd "C-S-x <right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "C-S-x <down>") 'shrink-window)
 (global-set-key (kbd "C-S-x <up>") 'enlarge-window)
-(global-set-key (kbd "C-S-v") 'select-line-next)
+(global-set-key (kbd "C-S-v") 'select-line-next) ;; works bad on empty line
 (global-set-key (kbd "C-M-S-v") 'select-line-previous)
-(global-set-key (kbd "C-S-n") '(lambda () (interactive) (next-line) (back-to-indentation)))
-(global-set-key (kbd "C-M-N") '(lambda () (interactive) (next-line) (move-end-of-line nil)))
-(global-set-key (kbd "C-S-p") '(lambda () (interactive) (previous-line) (back-to-indentation)))
-(global-set-key (kbd "C-M-P") '(lambda () (interactive) (previous-line) (move-end-of-line nil)))
+(global-set-key (kbd "C-S-n") 'next-line-start)
+(global-set-key (kbd "C-M-N") 'next-line-end)
+(global-set-key (kbd "C-S-p") 'previous-line-start)
+(global-set-key (kbd "C-M-P") 'previous-line-end)
 (global-set-key (kbd "C-S-s") 'iy-go-up-to-char) ;; repeating char -- repeating search
 (global-set-key (kbd "C-S-r") 'iy-go-to-char-backward)
 (global-set-key (kbd "C-]") 'iy-go-to-char) ;; shadow 'abort-recursive-edit
@@ -498,6 +527,9 @@
 (global-set-key (kbd "C-M-1") 'delete-other-windows)
 (global-set-key (kbd "C-M-2") 'split-window-below)
 (global-set-key (kbd "C-M-3") 'split-window-right)
+(global-set-key (kbd "C-M-^") 'scroll-other-window-down)
+(global-set-key (kbd "C-M-g") 'revert-buffer-no-confirm)
+(global-set-key (kbd "C-j") 'kill-line-backward)
 ;; M-s h [.u...]
 ;; free: C-M-y, M-s *, C-x <C-backsapce>
 
@@ -513,3 +545,5 @@
 (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this-dwim)
 (global-set-key (kbd "C-S-c l") 'mc/mark-pop)
 (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
+
+(define-key key-translation-map (kbd "<backtab>") (kbd "TAB"))
