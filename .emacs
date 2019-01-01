@@ -19,7 +19,7 @@
  '(package-selected-packages
    (quote
     (helm-fuzzier helm-fuzzy-find fuzzy fzf kivy-mode paredit smartscan use-package markdown-mode yaml-mode intero helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
-'(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
+;; '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -470,12 +470,16 @@
 (defun previous-line-start () (interactive) (previous-line) (back-to-indentation))
 (defun previous-line-end () (interactive) (previous-line) (move-end-of-line nil))
 
+(defun kill-sexp-backward () (interactive) (kill-sexp -1))
+
 (defun revert-buffer-no-confirm () (interactive) (revert-buffer t t))
 
-(defun half-screen () (max 1 (/ (1- (window-height)) 2)))
+(defun half-screen (&optional window) (max 1 (/ (1- (window-height (or window (selected-window)))) 2)))
 (advice-add 'scroll-down :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 (advice-add 'scroll-up :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
-(advice-add 'scroll-other-window :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
+(advice-add 'scroll-other-window :before '(lambda (&optional arg)
+                                            (setq next-screen-context-lines
+                                                  (half-screen (other-window-for-scrolling)))))
 
 ;; C-S-* and S-* doesn't work form terminal
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
@@ -530,8 +534,9 @@
 (global-set-key (kbd "C-M-^") 'scroll-other-window-down)
 (global-set-key (kbd "C-M-g") 'revert-buffer-no-confirm)
 (global-set-key (kbd "C-j") 'kill-line-backward)
-;; M-s h [.u...]
-;; free: C-M-y, M-s *, C-x <C-backsapce>
+(global-set-key (kbd "C-M-<backspace>") 'kill-sexp-backward)
+;; M-s h [.u...] -- highlight this
+;; free: C-M-y, M-s *, C-x <C-backsapce>, ...
 
 ;; multiple-cursors
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -541,8 +546,8 @@
 (global-set-key (kbd "C-S-c C-<") 'mc/mark-previous-like-this-symbol)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this) ;; these two marks next/previous _line_
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-c C->") 'mc/mark-all-like-this-dwim)
+;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-c C->") 'mc/mark-all-like-this-dwim) ;; C-c C-S-.
 (global-set-key (kbd "C-S-c l") 'mc/mark-pop)
 (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
 
