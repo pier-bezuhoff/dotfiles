@@ -25,7 +25,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:inherit nil :stipple nil :background "#242424" :foreground "#f6f3e8" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 114 :width normal :foundry "1ASC" :family "Droid Sans Mono")))))
 
 ;; when i become brave... (M-?)
 ;; (add-to-list 'load-path "~/.emacs.d/icicles") (icy-mode 1)
@@ -71,6 +71,7 @@
  indent-tabs-mode nil
  default-tab-width 4
  tab-width 4
+ default-input-method "russian-computer" ;; C-\ toggle input method
  matlab-shell-command "octave-cli"
  matlab-comment-region-s "% "
  delete-trailing-whitespace-on-save t ;; mine, for before-save-hook
@@ -80,7 +81,7 @@
  tab-width 4)
 
 ;; for Proof General (Coq)
-(load "~/.emacs.d/lisp/PG/generic/proof-site")
+;; (load "~/.emacs.d/lisp/PG/generic/proof-site")
 
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 (setq my-prettify-symbols-alist
@@ -131,6 +132,7 @@
         ("->" . ?→)
         ("=>" . ?⇒)
         )
+
       my-haskell-prettify-symbols-alist
       (append
        my-prettify-symbols-alist
@@ -156,8 +158,9 @@
          ("Double" . ?ℝ)
          ("String" . ?𝕊)
          ("[Char]" . ?𝕊)
-         ("Complex" . ?ℂ)
+         ("Complex Double" . ?ℂ)
          ))
+
       my-python-prettify-symbols-alist
       (append
        my-prettify-symbols-alist
@@ -169,21 +172,30 @@
          ("infinity" . ?∞)
          ("True" . ?𝕋)
          ("False" . ?𝔽)
-         ("math.sqrt" . ?√)
-         ("sqrt" . ?√)
-         ("sum" . ?∑)
+         ;; ("math.sqrt" . ?√)
+         ;; ("sqrt" . ?√)
+         ;; ("sum" . ?∑)
          ("return" . ?⟼)
          ;; ("all" . ?∀)
          ;; ("any" . ?∃)
-         ("for" . ?∀)
+         ;; ("for" . ?∀)
          ("oo" . ?∞)
          ("int" . ?ℤ)
          ("float" . ?ℝ)
          ("str" . ?𝕊)
          ("complex" . ?ℂ)
          ("yield" . ?⟻)
-         ("in" . ?∈)
-         ("not in" . ?∉)
+         ;; ("in" . ?∈)
+         ;; ("not in" . ?∉)
+         ))
+
+      my-coq-prettify-symbols-alist
+      (append
+       my-prettify-symbols-alist
+       '(
+         ("<->" . ?⇔)
+         ("Proof." . ?□)
+         ("Qed." . ?■)
          ))
       prettify-symbols-alist my-prettify-symbols-alist
       python-prettify-symbols-alist my-python-prettify-symbols-alist)
@@ -244,6 +256,13 @@
   (hooking python-mode-hook
            (setq python-indent 4)
            (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
+
+(hooking coq-mode-hook
+         (menu-bar-mode t)
+         (setq coq-prettify-symbols-alist (append coq-prettify-symbols-alist my-coq-prettify-symbols-alist))
+         (setq prettify-symbols-alist coq-prettify-symbols-alist)
+         (setq coq-prog-name "/home/pierbezuhoff/.opam/default/bin/coqtop")
+         (load-file "~/Programming/Coq/math-comp/mathcomp/ssreflect/pg-ssr.el"))
 
 (use-package ido
   :init
@@ -453,7 +472,7 @@
 
 (defun hard-o () (interactive) (move-end-of-line nil) (newline))
 
-(defun hard-O () (interactive) (move-beginning-of-line nil) (newline))
+(defun hard-O () (interactive) (move-beginning-of-line nil) (newline) (previous-line))
 
 (defun move-to-top () (interactive) (move-to-window-line 0))
 (defun move-to-middle () (interactive) (move-to-window-line nil))
@@ -474,22 +493,31 @@
 
 (defun revert-buffer-no-confirm () (interactive) (revert-buffer t t))
 
+(defun forward-word+ () (interactive) (forward-word) (forward-char))
+(defun backward-word+ () (interactive) (backward-word) (backward-char))
+(defun forward-sexp+ () (interactive) (forward-sexp) (forward-char))
+(defun backward-sexp+ () (interactive) (backward-sexp) (backward-char))
+
 (defun half-screen (&optional window) (max 1 (/ (1- (window-height (or window (selected-window)))) 2)))
 (advice-add 'scroll-down :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 (advice-add 'scroll-up :before '(lambda (&optional arg) (setq next-screen-context-lines (half-screen))))
 (advice-add 'scroll-other-window :before '(lambda (&optional arg)
                                             (setq next-screen-context-lines
                                                   (half-screen (other-window-for-scrolling)))))
-
+; TODO: keybindings -> assoc list -> map over it
 ;; C-S-* and S-* doesn't work form terminal
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+(global-set-key (kbd "M-F") 'forward-word+)
+(global-set-key (kbd "M-B") 'backward-word+)
+(global-set-key (kbd "C-M-S-f") 'forward-sexp+)
+(global-set-key (kbd "C-M-S-b") 'backward-sexp+)
 (global-set-key (kbd "M-<up>") 'move-line-or-region-up)
 (global-set-key (kbd "M-<down>") 'move-line-or-region-down)
 (global-set-key (kbd "M-S-SPC") 'insert-space-backward)
 (global-set-key (kbd "C-o") 'new-line-down)
 (global-set-key (kbd "C-S-o") 'new-line-up)
-(global-set-key (kbd "M-o RET") 'hard-o)
-(global-set-key (kbd "M-o M-RET") 'hard-O)
+(global-set-key (kbd "C-M-o") 'hard-o) ;; overrides default 'split-line
+(global-set-key (kbd "C-M-S-o") 'hard-O)
 (global-set-key (kbd "C-S-k") 'kill-line-spaces)
 (global-set-key (kbd "M-s d") 'desktop-change-dir)
 (global-set-key (kbd "M-s s") 'desktop-save)
@@ -535,6 +563,7 @@
 (global-set-key (kbd "C-M-g") 'revert-buffer-no-confirm)
 (global-set-key (kbd "C-j") 'kill-line-backward)
 (global-set-key (kbd "C-M-<backspace>") 'kill-sexp-backward)
+(global-set-key (kbd "C-*") 'comint-dynamic-complete-filename)
 ;; M-s h [.u...] -- highlight this
 ;; free: C-M-y, M-s *, C-x <C-backsapce>, ...
 
@@ -552,3 +581,4 @@
 (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
 
 (define-key key-translation-map (kbd "<backtab>") (kbd "TAB"))
+;; (define-key key-translation-map (kbd "<C-tab>") (kbd "TAB"))
