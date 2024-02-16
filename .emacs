@@ -1,3 +1,4 @@
+;; Emacs 29.1 works
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -5,22 +6,16 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
- '(custom-enabled-themes (quote (wombat)))
+ '(custom-enabled-themes '(wombat))
  '(custom-safe-themes
-   (quote
-    ("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "95b0bc7b8687101335ebbf770828b641f2befdcf6d3c192243a251ce72ab1692" default)))
+   '("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "95b0bc7b8687101335ebbf770828b641f2befdcf6d3c192243a251ce72ab1692" default))
  '(hl-sexp-background-color "#1c1f26")
  '(icicle-mode nil)
  '(package-archives
-   (quote
-    (
-     ("gnu" . "http://elpa.gnu.org/packages/")
-     ("melpa" . "http://melpa.org/packages/")
-     ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
-     )))
+   '(("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa" . "http://melpa.org/packages/")))
  '(package-selected-packages
-   (quote
-    (julia-mode ghc intero helm-fuzzier helm-fuzzy-find fuzzy fzf kivy-mode paredit smartscan use-package markdown-mode yaml-mode helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy))))
+   '(auctex julia-mode ghc intero helm-fuzzier helm-fuzzy-find fuzzy fzf kivy-mode paredit smartscan use-package markdown-mode yaml-mode helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy)))
 ;; '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -220,97 +215,98 @@
   `(add-hook ',hook '(lambda () ,@actions)))
 
 ; smth broke w/ it
-;;(use-package cc-mode
-;;  :config
-;;  (hooking c-mode-hook
-;;           (setq prettify-symbols-alist my-prettify-symbols-alist)
-;;           (setq c-basic-offset 4)
-;;           (irony-mode 1)
-;;           (company-mode 1)
-;;           (flycheck-mode 1)
-;;           (irony-eldoc)
-;;           (irony-cdb-autosetup-compile-options)))
-;;
-;;(use-package haskell-mode
-;;  :config
-;;  (hooking haskell-mode-hook
-;;           (setq haskell-font-lock-symbols t)
-;;           ;; "()" is not empty set!
-;;           (delq (assoc "()" haskell-font-lock-symbols-alist) haskell-font-lock-symbols-alist)
-;;           (setq prettify-symbols-alist my-haskell-prettify-symbols-alist)
-;;           ;; (intero-mode t)
-;;           (prettify-symbols-mode t)))
-;;
-;;(use-package julia-mode
-;;  :config
-;;  (hooking julia-mode-hook
-;;           (setq prettify-symbols-alist my-julia-prettify-symbols-alist)
-;;           (prettify-symbols-mode t)))
-;;
-;;(use-package octave
-;;  :config
-;;  (hooking octave-mode-hook
-;;           (setq prettify-symbols-alist my-prettify-symbols-alist)
-;;           (abbrev-mode 1)
-;;           (auto-fill-mode 1)
-;;           (if (eq window-system 'x)
-;;               (font-lock-mode 1))))
-;;
-;;(use-package lisp-mode
-;;  :config
-;;  (hooking lisp-mode-hook
-;;           (setq prettify-symbols-alist my-prettify-symbols-alist)))
-;;
-;;(use-package elisp-mode
-;;  :config
-;;  (hooking emacs-lisp-mode-hook
-;;           (setq prettify-symbols-alist my-prettify-symbols-alist)))
-;;
-;;(use-package python
-;;  :config
-;;  (elpy-enable)
-;;  (setq
-;;   elpy-rpc-python-command "python3"
-;;   python-shell-interpreter "ipython3"
-;;   python-shell-interpreter-args "-i --simple-prompt")
-;;  ;; (when (require 'flycheck nil t)
-;;  ;; elpy-modules (delq elpy-module-flymake elpy-modules))
-;;  ;; (flycheck-mode)
-;;  (hooking python-mode-hook
-;;           (setq python-indent 4)
-;;           (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
-;;
-;;(hooking coq-mode-hook
-;;         (menu-bar-mode t)
-;;         (setq coq-prettify-symbols-alist (append coq-prettify-symbols-alist my-coq-prettify-symbols-alist))
-;;         (setq prettify-symbols-alist coq-prettify-symbols-alist)
-;;         (setq coq-prog-name "/home/pierbezuhoff/.opam/default/bin/coqtop")
-;;         (load-file "~/Programming/Coq/math-comp/mathcomp/ssreflect/pg-ssr.el"))
-;;
-;;(use-package ido
-;;  :init
-;;  (ido-mode 1)
-;;  :bind
-;;  ("C-x :" . idomenu))
-;;
-;;(use-package flycheck-mode
-;;  :bind
-;;  ("C-!" . flycheck-list-errors)
-;;  ("C-?" . flycheck-next-error)
-;;  ("C-M-?" . flycheck-previous-error))
-;;
-;;(use-package smartscan
-;;  :init
-;;  (global-smartscan-mode t))
-;;
-;;(hooking before-save-hook
-;;         (if (not indent-tabs-mode)
-;;             (untabify (point-min) (point-max)))
-;;         (if delete-trailing-whitespace-on-save (delete-trailing-whitespace)))
+(use-package cc-mode
+ :config
+ (hooking c-mode-hook
+          (setq prettify-symbols-alist my-prettify-symbols-alist)
+          (setq c-basic-offset 4)
+          (irony-mode 1)
+          (company-mode 1)
+          (flycheck-mode 1)
+          (irony-eldoc)
+          (irony-cdb-autosetup-compile-options)))
+
+(use-package haskell-mode
+ :config
+ (hooking haskell-mode-hook
+          (setq haskell-font-lock-symbols t)
+          ;; "()" is not empty set!
+;; ::;;           (delq (assoc "()" haskell-font-lock-symbols-alist) haskell-font-lock-symbols-alist)
+;; :::;;           (setq prettify-symbols-alist my-haskell-prettify-symbols-alist)
+          ;; (intero-mode t)
+          (prettify-symbols-mode t)))
+
+(use-package julia-mode
+ :config
+ (hooking julia-mode-hook
+          (setq prettify-symbols-alist my-julia-prettify-symbols-alist)
+          (prettify-symbols-mode t)))
+
+(use-package octave
+ :config
+ (hooking octave-mode-hook
+          (setq prettify-symbols-alist my-prettify-symbols-alist)
+          (abbrev-mode 1)
+          (auto-fill-mode 1)
+          (if (eq window-system 'x)
+              (font-lock-mode 1))))
+
+(use-package lisp-mode
+ :config
+ (hooking lisp-mode-hook
+          (setq prettify-symbols-alist my-prettify-symbols-alist)))
+
+(use-package elisp-mode
+ :config
+ (hooking emacs-lisp-mode-hook
+          (setq prettify-symbols-alist my-prettify-symbols-alist)))
+
+(use-package python
+ :config
+ (elpy-enable)
+ (setq
+  elpy-rpc-python-command "python3"
+  python-shell-interpreter "ipython3"
+  python-shell-interpreter-args "-i --simple-prompt")
+ ;; (when (require 'flycheck nil t)
+ ;; elpy-modules (delq elpy-module-flymake elpy-modules))
+ ;; (flycheck-mode)
+ (hooking python-mode-hook
+          (setq python-indent 4)
+          (setq prettify-symbols-alist my-python-prettify-symbols-alist)))
+
+(hooking coq-mode-hook
+        (menu-bar-mode t)
+        (setq coq-prettify-symbols-alist (append coq-prettify-symbols-alist my-coq-prettify-symbols-alist))
+        (setq prettify-symbols-alist coq-prettify-symbols-alist)
+        (setq coq-prog-name "/home/pierbezuhoff/.opam/default/bin/coqtop")
+        (load-file "~/Programming/Coq/math-comp/mathcomp/ssreflect/pg-ssr.el"))
+
+(use-package ido
+ :init
+ (ido-mode 1)
+ :bind
+ ("C-x :" . idomenu))
+
+(use-package flycheck-mode
+ :bind
+ ("C-!" . flycheck-list-errors)
+ ("C-?" . flycheck-next-error)
+ ("C-M-?" . flycheck-previous-error))
+
+(use-package smartscan
+ :init
+ (global-smartscan-mode t))
+
+(hooking before-save-hook
+        (if (not indent-tabs-mode)
+            (untabify (point-min) (point-max)))
+        (if delete-trailing-whitespace-on-save (delete-trailing-whitespace)))
 (use-package tex
  :ensure auctex)
 
 (require 'delsel)
+
 
 ;; my key bindings
 (defun new-line-down ()
