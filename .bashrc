@@ -76,6 +76,7 @@ fi
 alias ls='ls --color=auto'
 alias l='ls -F'
 alias :q='exit'
+alias vimf='vim $(fzf)'
 
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
@@ -86,3 +87,4 @@ export VISUAL="emacs"
 
 PATH="$PATH:$(ruby -e 'puts Gem.user_dir')/bin"
 #eval $(opam env) # for ocaml (coq)
+eval "$(zoxide init bash)"

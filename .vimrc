@@ -13,6 +13,7 @@ call plug#begin()
 " Make sure you use single quotes
 
 Plug 'junegunn/seoul256.vim' " theme
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
@@ -112,5 +113,5 @@ nnoremap <Leader>g :GhcModSigCodegen<CR>
 nnoremap <Leader>l :GhcModLint<CR>
 nnoremap <Leader>c :GhcModCheck<CR> 
 
-" coq
+" uhh
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
