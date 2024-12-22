@@ -21,6 +21,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 "Plug 'dense-analysis/ale'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'leafOfTree/vim-svelte-plugin'
 
 "" Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.

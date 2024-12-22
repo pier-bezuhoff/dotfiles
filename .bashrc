@@ -78,6 +78,23 @@ alias l='ls -F'
 alias :q='exit'
 alias vimf='vim $(fzf)'
 
+# Pacman aliases
+alias pac="sudo pacman" # Base alias for sudo pacman
+alias pacs="pac -S" # Install package
+alias pacss="pac -Ss" # Search for package
+alias pacu="pac -Syu" # Update package database and upgrade packages
+alias pacr="pac -Rns" # Remove package and its dependencies
+alias pacq="pac -Qi" # Query installed package information
+alias pacl="pac -Ql" # List files in a package
+# Pacman cache management aliases
+alias paccc="pac -Sc" # Remove all cached versions of uninstalled packages
+alias pacccc="pac -Scc" # Remove all files from the cache (use carefully!)
+alias pacclean="paccache -r" # Remove all cached versions of installed and uninstalled packages, except for the most recent 3 versions
+alias paccleanold="paccache -rk1" # Keep only one version of each package in the cache
+alias pacdirsize="du -sh /var/cache/pacman/pkg/" # Show the size of the pacman cache directory
+alias pacorphans="pac -Qtdq" # List all packages that were installed as dependencies but are no longer required by any installed package
+alias pacrmorphans="pac -Rns $(pacman -Qtdq)" # Remove all orphaned packages
+
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 CDPATH=:~:~/Documents/:~/Programming/
@@ -88,3 +105,6 @@ export VISUAL="emacs"
 PATH="$PATH:$(ruby -e 'puts Gem.user_dir')/bin"
 #eval $(opam env) # for ocaml (coq)
 eval "$(zoxide init bash)"
+
+# local proxy to bypass dpi @127.0.0.1 port 1080 via SOCKS 5
+# byedpi --disorder 1 --auto=torst --tlsrec 1+s &
