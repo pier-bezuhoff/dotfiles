@@ -99,12 +99,17 @@ export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 CDPATH=:~:~/Documents/:~/Programming/
 #eval "$(stack --bash-completion-script stack)" # for haskell stack
+# HDD stack path
+HDD_LOCAL_STACK_PATH=/run/media/pierbezuhoff/10B8AA4EB8AA3260/Projects/.stack/
+if [ -d "$HDD_LOCAL_STACK_PATH" ]; then
+    export STACK_ROOT="$HDD_LOCAL_STACK_PATH"
+fi
 
 export VISUAL="emacs"
 
 PATH="$PATH:$(ruby -e 'puts Gem.user_dir')/bin"
 #eval $(opam env) # for ocaml (coq)
-eval "$(zoxide init bash)"
+# eval "$(zoxide init bash)"
 
 # local proxy to bypass dpi @127.0.0.1 port 1080 via SOCKS 5
 # byedpi --disorder 1 --auto=torst --tlsrec 1+s &

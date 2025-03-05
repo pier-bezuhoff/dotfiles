@@ -8,14 +8,20 @@
    [default default default italic underline success warning error])
  '(custom-enabled-themes '(wombat))
  '(custom-safe-themes
-   '("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "95b0bc7b8687101335ebbf770828b641f2befdcf6d3c192243a251ce72ab1692" default))
+   '("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a"
+     "95b0bc7b8687101335ebbf770828b641f2befdcf6d3c192243a251ce72ab1692"
+     default))
  '(hl-sexp-background-color "#1c1f26")
  '(icicle-mode nil)
  '(package-archives
    '(("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.org/packages/")))
  '(package-selected-packages
-   '(auctex julia-mode ghc intero helm-fuzzier helm-fuzzy-find fuzzy fzf kivy-mode paredit smartscan use-package markdown-mode yaml-mode helm-xcdoc helm-xref helm kotlin-mode idomenu iy-go-to-char flycheck company-irony irony-eldoc irony multiple-cursors elpy)))
+   '(auctex company-irony elpy flycheck fuzzy fzf ghc haskell-mode helm
+            helm-fuzzier helm-fuzzy-find helm-xcdoc helm-xref idomenu
+            intero irony irony-eldoc iy-go-to-char julia-mode
+            kivy-mode kotlin-mode markdown-mode multiple-cursors
+            paredit smartscan use-package yaml-mode)))
 ;; '(coq-prog-args '("-R" "~/Documents/Additional/Math/Coq/cpdt/src" "Cpdt"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
