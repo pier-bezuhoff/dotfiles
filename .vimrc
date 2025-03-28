@@ -188,4 +188,8 @@ nnoremap т n
 nnoremap ь m
 nnoremap б ,
 nnoremap ю .
+nnoremap Ф A
+nnoremap Ш I
+nnoremap сц cw
+nnoremap вц dw
 " nnoremap . /
